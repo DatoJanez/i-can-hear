@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-light-theme="light" data-dark-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link rel="stylesheet" href="style.css" />
+    <script type="application/javascript" src="main.js"></script> -->
+    <meta name="viewport" content="width=device-width">
+    <title>i-can-hear</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --item-height: 50px;
+            --header-height: 60px;
+            --left-bar-size: 300px;
+            --dashboard-height: 430px;
+        }
+
+        body {
+            margin: 0;
+            background: rgb(34, 37, 38);
+        }
+
+        * {
+            color: rgb(184, 184, 184);
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        *::-webkit-scrollbar {
+            width: 1em;
+        }
+
+        *::-webkit-scrollbar-track {
+            /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #414141;
+            /* outline: 1px solid slategrey; */
+        }
+
+
+
+
+        .item:hover, .item.active,
+        .button.add-button:hover {
+            background: rgba(255, 255, 255, .1);
+
+        }
+
+        .button.add-button:hover i {
+            color: rgb(18, 184, 101);
+        }
+
+        .left-bar {
+            width: var(--left-bar-size);
+            position: fixed;
+            height: 100%;
+            background: #2d2d2d;
+            overflow: hidden;
+        }
+
+        .pop-up {
+            width: calc(100% - 2*var(--left-bar-size) - 30px);
+            position: fixed;
+            height: 80%;
+            left: calc(var(--left-bar-size) + 15px);
+            top: 55px;
+            background: #2d2d2d;
+            overflow: hidden;
+        }
+
+        .button.add-button {
+            width: 100%;
+            height: 51px;
+            display: flex;
+            align-items: center;
+            padding-left: 60px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, .4);
+            font-size: 13px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            position: relative;
+        }
+
+        .button.add-button i {
+
+            font-size: 27px;
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            font-weight: bold;
+        }
+
+        .existing-itmes {
+            width: 100%;
+            height: calc(100% - 121px);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .pop-up .existing-itmes {
+            height: calc(100% - 273px);}
+        .item {
+            height: var(--item-height);
+            width: 100%;
+            position: relative;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .item input {
+            margin-top: 13px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .item-logo {
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            height: 40px;
+            width: 40px;
+        }
+
+        .profile-picture {
+            border-radius: 100%;
+            overflow: hidden;
+            width: 30px;
+            height: 30px;
+            margin-top: 5px;
+            position: absolute;
+        }
+
+        .item-logo i {
+            width: 16px;
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+        }
+
+        .item-name {
+            position: absolute;
+            left: 60px;
+            height: var(--item-height);
+            top: 0;
+            width: calc(100% - 60px);
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+
+        }
+
+        .remove-item,
+        .add-item {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 40px;
+            right: 0;
+        }
+
+        .add-item {
+            font-style: normal;
+            right: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #078c07;
+        }
+
+        .remove-item i {
+            content: '+';
+            transform: rotate(45deg);
+            font-size: 31px;
+            opacity: .1;
+        }
+
+        .remove-item:hover i {
+            opacity: .7;
+            color: salmon
+        }
+
+        .line {
+            width: 100%;
+            height: 51px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, .4);
+            font-size: 13px;
+            justify-content: space-evenly;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .menu-itme {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 23px;
+            cursor: pointer;
+            opacity: .4;
+
+        }
+
+        .menu-itme.active,
+        .menu-itme:hover {
+            background: rgba(0, 0, 0, .4);
+            opacity: 1;
+        }
+
+        .fa-facebook {
+            color: #3b5998
+        }
+
+        .fa-youtube {
+            color: #ff0000
+        }
+
+        .fa-viber {
+            color: #12af0a
+        }
+
+        .fa-telegram {
+            color: #2ca5e0
+        }
+
+        .menu-itme svg {
+            width: 20px
+        }
+
+        .menu-itme img {
+            width: 20px;
+        }
+
+        .pop-header {
+            height: var(--header-height);
+            display: flex;
+            width: 100%;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+            padding-left: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            position: relative;
+        }
+
+        .invert {
+            filter: invert(1);
+        }
+        input{
+            background: rgba(255, 255, 255, .1);
+            border: none;
+            padding: 0 14px;
+            outline: none;
+        }
+        .line input{
+            height: 69%;
+        }
+        #search-input {
+            width: calc(100% - 20px);
+        }
+        #date-from, #date-to { width: 48%;}
+
+        .item-report {
+            height: 70px;
+        }
+
+        .item-footer {
+            position: absolute;
+            height: calc(100% - var(--item-height));
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            /* align-items: center; */
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            padding-left: 10px;
+        }
+
+        .item-report .item-name {
+            left: 0;
+            padding-left: 15px;
+            width: calc(100% - 120px);
+        }
+
+        .item-logo.item-multi-logos {
+            left: auto;
+            right: 15px;
+            width: 110px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(1) {
+            right: 0px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(2) {
+            right: 20px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(3) {
+            right: 40px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(4) {
+            right: 60px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture.count {
+            font-weight: bold;
+            font-size: 13px;
+            font-style: inherit;
+            /* height: var(--item-height); */
+            align-items: center;
+            display: flex;
+            background-color: rgba(0, 0, 0, .8);
+            width: 34px;
+            height: 34px;
+            top: -2px;
+            justify-content: center;
+        }
+        .pop-bg{
+            z-index: 100;
+            position: fixed;
+            top:0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .7);
+            display: none;
+        }
+        .pop-header .close{
+            position: absolute;
+            right: 0;
+            width: var(--header-height);
+            height: 100%;
+            background: rgba(255, 255, 255, .1);
+            cursor: pointer;
+        }
+        .close i{
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+            width: 100%;
+            height: 100%;
+            font-size: 25px;
+        }
+        .close:hover i{
+            color: tomato;
+        }
+        .left-footer{
+            position: absolute;
+            bottom: 0;
+            background: rgba(255, 255, 255, .1);
+            height: var(--header-height);
+            justify-content: left;
+            padding-left: 15px;
+        }
+        .left-footer i {
+            position: absolute;
+            right: 0;
+            top:0;
+            height: 100%;
+            width: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, .1);
+            font-size: 14px;
+        }
+        .left-footer i:hover{
+            color:salmon
+        }
+        #dashboard{
+            position: fixed;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: calc(100% - var(--left-bar-size));
+            right: 0;
+            padding: 15px;
+            top: 100px;
+        }
+        
+        .dashboard-header{
+            z-index: 90;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: calc(100% - var(--left-bar-size));
+            height: 100px;
+            background: rgb(57 59 60);
+            padding-left: 18px;
+        }
+        .report-title{
+            width: 80%;
+            height: 60px;
+            font-size: 21px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-sub-header{
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            position: relative;
+            margin-top: 6px;
+        }
+        .dashboard-sub-header > div {    
+            position: absolute;
+            right: 20px;
+            top: 0;
+        }
+        .dashboard-sub-header > div a{    
+            padding-left: 15px;
+        }
+        .dashboard-sub-header > div a:hover{    
+            color:rgba(255, 255, 255, .4)
+        }
+        .dashboard-header .item-multi-logos{
+            top: 12px;
+            right: 30px;
+        }
+        .dashboard-block{
+            width: 100%;
+            position: relative;
+            height: var(--header-height);
+            background: #2d2d2d;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .dashboard-block .pop-header {cursor: pointer;}
+        .dashboard-block .existing-itmes{height: calc(100% - 62px);}
+        .dashboard-table-header{
+            justify-content: inherit;
+            /* padding: 0 10px; */
+        }
+        .dashboard-table-header span{ 
+            height: 100%;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid rgba(255, 255, 255, .1);
+            padding-left: 10px;
+            font-size: 11px;
+        }
+
+        .dashboard-table-header span:nth-child(1){ width: 26%; }
+        .dashboard-table-header span:nth-child(2){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(3){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(4){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(5){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(6){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(7){ width: 10.6%; }
+        .dashboard-table-header span:nth-child(8){ width: 10.6%; }
+
+        .item.incative > *{ opacity: .2;}
+
+        .loader-cont{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader {
+            border: 5px solid rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            width: 30px;
+            height: 30px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+
+        .pop-up .button{
+            cursor: pointer;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .4);
+            font-size: 14px;
+        }
+        .pop-up .button i {
+            font-size: 11px;
+            opacity: .7;
+            padding-left: 7px;
+        }
+        .pop-up .button:hover{
+            background: rgba(255, 255, 255, .2);
+        }
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: .5;
+            width: 20px;
+            cursor: pointer;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-header input{
+            cursor: pointer;
+            background: none;
+            width: 95px;
+            padding: 0 2px;
+            font-size: 12px;
+        }
+        .dashboard-header input:hover{
+            color: rgba(255, 255, 255, .4);
+        }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div class="left-bar">
+        <!-- <div class="button add-button" id="find-a-channel"><i>+</i> Find a channel</div> -->
+        <div class="button add-button" id="create-a-report"><i>+</i> Create a new report</div>
+        <div class="pop-header">Reports</div>
+        <div class="existing-itmes">
+            <div class="item item-report active">
+                <div class="item-logo item-multi-logos">
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-9/cp0/c30.0.90.90a/p118x90/221667373_1780467432135947_5792342848504884561_n.png?_nc_cat=105&ccb=1-3&_nc_sid=70495d&_nc_ohc=rLEdpa4fnzkAX8WIPIl&_nc_ht=scontent.ftbs6-1.fna&oh=1fc661c9916641a0ce38a796c2aca515&oe=612264C3" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-9/cp0/c47.0.866.866a/s118x90/29541674_573019473063645_1634631189445452996_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=70495d&_nc_ohc=bZ7MpliL1aYAX8Ew7SL&_nc_ht=scontent.ftbs6-1.fna&oh=e0e0baa77c39db3873c3040627e5b9a5&oe=6121789A" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/32846765_213733512744612_2907879059109183488_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=7206a8&_nc_ohc=XIGH3jTYAS4AX8IvcAp&_nc_ht=scontent.ftbs6-1.fna&oh=f5893f8cb280b74b28380d5e610a346d&oe=612016F9" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/51939214_105210243952698_7303999822841774080_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=7206a8&_nc_ohc=qMCrunFpEVsAX8XR7XT&_nc_ht=scontent.ftbs6-1.fna&oh=34fe34604d81a9435c079cfdf2ae69ae&oe=6120D51B" />
+                    <span class="profile-picture count">+31</span>
+                </div>
+                <div class="item-name">Anti West Media</div>
+                <div class="item-footer">
+                    20 May 2021 to present - 2.3K posts, 130 videos
+                </div>
+            </div>
+            <div class="item item-report">
+                <div class="item-logo item-multi-logos">
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-1/p100x100/1925279_1480214478865684_1317880383_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=gvFVgvoOHi4AX-I96fZ&_nc_ht=scontent.ftbs6-1.fna&oh=f790a58a858ccdee8aac1919a10cdf91&oe=61226BA0" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/118822454_982875945511177_4098857531027189036_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=7206a8&_nc_ohc=u51sroi3ao4AX8FGUP7&_nc_ht=scontent.ftbs6-1.fna&oh=d292248a4e606db74c7e123a8ba90da5&oe=61220198" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/45886682_10157018470719752_2326261558616784896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=dhW3E8bhuLIAX9_sCNu&_nc_ht=scontent.ftbs6-1.fna&oh=83e8d5817cc52fe62e2c5aa758f6e467&oe=612131D5" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p200x200/187792897_2955412488071948_6187605992762447475_n.png?_nc_cat=106&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=nnXSKBpT25AAX-XfHnM&_nc_ht=scontent.ftbs6-1.fna&oh=a13322ac57c88fd106a0b52da1e1fc44&oe=611EDECE" />
+                    <span class="profile-picture count">+82</span>
+                </div>
+                <div class="item-name">Pro Cremlian Media</div>
+                <div class="item-footer">
+                    11 April 2021 to present - 11K posts, 2.3K videos
+                </div>
+            </div>
+            <div class="item item-report">
+                <div class="item-logo item-multi-logos">
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/84358956_1257309294464568_2663158943638880256_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=RleYO-973_kAX_najfh&_nc_ht=scontent.ftbs6-1.fna&oh=719fa5f79dd40c85aba87a2cf9528e65&oe=61226F3F" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p200x200/187792897_2955412488071948_6187605992762447475_n.png?_nc_cat=106&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=nnXSKBpT25AAX-XfHnM&_nc_ht=scontent.ftbs6-1.fna&oh=a13322ac57c88fd106a0b52da1e1fc44&oe=611EDECE" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/86261417_1077320529280102_1486244274247827456_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=dbb9e7&_nc_ohc=3coijy2--SQAX9b5rYi&_nc_ht=scontent.ftbs6-1.fna&oh=a4c41fcafe318c40997be20a20427c60&oe=6121F5D5" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t31.18172-1/cp0/p74x74/15304254_1228304067261509_2241489461398828170_o.jpg?_nc_cat=1&ccb=1-3&_nc_sid=dbb9e7&_nc_ohc=mEW1QEGv6NMAX_CIlFC&tn=rhVX4__77HOsdZUC&_nc_ht=scontent.ftbs6-1.fna&oh=0b64ee6074f9089a7e256c8bb0360217&oe=61211498" />
+                    <span class="profile-picture count">+17</span>
+                </div>
+                <div class="item-name">Pro Governmental Media</div>
+                <div class="item-footer">
+                    8 June 2021 to present - 1.2K posts, 80 videos
+                </div>
+            </div>
+            <div class="item item-report">
+                <div class="item-logo item-multi-logos">
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/72546530_1383478278478142_5028876172075728896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=TmC5M8mXx-4AX9PVl5j&_nc_ht=scontent.ftbs6-1.fna&oh=fcfcfed7cf93ccfb30e7bf96ae21384c&oe=612265F6" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p200x200/187792897_2955412488071948_6187605992762447475_n.png?_nc_cat=106&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=nnXSKBpT25AAX-XfHnM&_nc_ht=scontent.ftbs6-1.fna&oh=a13322ac57c88fd106a0b52da1e1fc44&oe=611EDECE" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p148x148/71718242_1161607410697190_2919291461524520960_n.png?_nc_cat=101&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=qGVMdY8mNoUAX-UYCxo&_nc_ht=scontent.ftbs6-1.fna&oh=b1dbed88d047c940b897b5a422b983ce&oe=6121B4A1" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/cp0/p80x80/69473894_107069937329792_1262745274359480320_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=dbb9e7&_nc_ohc=i7vbN2sbKZgAX8Ok3N0&_nc_ht=scontent.ftbs6-1.fna&oh=2ad79a7b9646131c6de87ef33e7c0b19&oe=6120DA2B" />
+                    <span class="profile-picture count">+21</span>
+                </div>
+                <div class="item-name">Pro Opposition Media</div>
+                <div class="item-footer">
+                    30 May 2021 to present - 1.8K posts, 103 videos
+                </div>
+            </div>
+            <div class="item item-report">
+                <div class="item-logo item-multi-logos">
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t31.18172-1/c0.31.100.100a/p100x100/15972616_1896443447244354_6432179332496685126_o.jpg?_nc_cat=101&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=htEZoCMp4W8AX-Gq3DV&_nc_ht=scontent.ftbs6-1.fna&oh=1530af4cd2d34962188ecfc76d5b4733&oe=61217CFA" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/123105415_652704468750756_7871444256643009404_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=lgiD30Z1pCUAX9TzhfJ&tn=rhVX4__77HOsdZUC&_nc_ht=scontent.ftbs6-1.fna&oh=661673f0479ad2c250ef01a3921f872e&oe=612127C7" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/c20.0.100.100a/p100x100/123538471_114652100437165_5128666265234042944_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=7206a8&_nc_ohc=I-rl4wZiPwsAX8fAxf9&_nc_ht=scontent.ftbs6-1.fna&oh=c1e3de2699439d9967423fdc78b6fa2a&oe=611FC974" />
+                    <img class="profile-picture"
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/121580537_2763777700392315_4652978304749394134_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=eNoh8KqL_UYAX8vsosR&_nc_ht=scontent.ftbs6-1.fna&oh=bca347960fad4fc2e91e9bd1af22472d&oe=61215856" />
+                    <span class="profile-picture count">+18</span>
+                </div>
+                <div class="item-name">Public Figures</div>
+                <div class="item-footer">
+                    23 April 2021 to present - 1.2K posts, 101 videos
+                </div>
+                <div class="loader-cont">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
+        <div class="line left-footer">
+            Logged in as Davit Janezashvili <i class="fas fa-sign-out-alt"></i>
+        </div>
+    </div>
+    
+    <div class="pop-bg" id="create-a-report-pop">
+        <div class="pop-up">
+            <div class="pop-header">
+                New Report Dialog Block <div class="close"><i>+</i></div>
+            </div>
+            <div class="line">
+                <input id="date-from" type="date" />
+                <input id="date-to" type="date" />
+            </div>
+            <div class="line">
+                <div class="menu-itme active" title="Facebook"><i class="fab fa-facebook"></i></div>
+                <div class="menu-itme" title="Facebook"><i class="fab fa-youtube"></i></div>
+                <div class="menu-itme" title="Facebook"><svg viewBox="0 0 448 512"> <path fill="currentColor" d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"></path></svg></div>
+                <div class="menu-itme" title="Facebook"><i class="fab fa-telegram"></i></div>
+                <div class="menu-itme" title="Facebook"><i class="fab fa-viber"></i></div>
+                <div class="menu-itme" title="TV Pirveli"><img
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/72546530_1383478278478142_5028876172075728896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=TmC5M8mXx-4AX9PVl5j&_nc_ht=scontent.ftbs6-1.fna&oh=fcfcfed7cf93ccfb30e7bf96ae21384c&oe=612265F6" />
+                </div>
+                <div class="menu-itme" title="Facebook"><img
+                        src="https://static.myvideo.ge/media/cache/image/15403/0ad88260-d6a0-11e8-92cc-9f7ea6b37d3e_100x100.png" />
+                </div>
+                <div class="menu-itme" title="Facebook"><img
+                        src="https://static.myvideo.ge/media/cache/image/15681/22913180-d30e-11e9-b954-313437ef31a2_100x100.png" />
+                </div>
+                <div class="menu-itme" title="Facebook"><img
+                        src="https://static.myvideo.ge/media/cache/image/15078/6db1a9e0-ae59-11e7-8bce-451e8c8199ef_100x100.png" />
+                </div>
+                <div class="menu-itme" title="Facebook"><img
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/84358956_1257309294464568_2663158943638880256_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=RleYO-973_kAX_najfh&_nc_ht=scontent.ftbs6-1.fna&oh=719fa5f79dd40c85aba87a2cf9528e65&oe=61226F3F" />
+                </div>
+                <div class="menu-itme" title="Facebook"><img class="invert"
+                        src="https://static.myvideo.ge/media/cache/image/15738/d110ba00-06e3-11ea-9c12-17cd430ed5c3_100x100.png" />
+                </div>
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class="existing-itmes">
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p200x200/187792897_2955412488071948_6187605992762447475_n.png?_nc_cat=106&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=nnXSKBpT25AAX-XfHnM&_nc_ht=scontent.ftbs6-1.fna&oh=a13322ac57c88fd106a0b52da1e1fc44&oe=611EDECE" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">Myth Detector</div>
+                    <i class="add-item">Select</i>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/45886682_10157018470719752_2326261558616784896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=dhW3E8bhuLIAX9_sCNu&_nc_ht=scontent.ftbs6-1.fna&oh=83e8d5817cc52fe62e2c5aa758f6e467&oe=612131D5" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">ambebi.ge • ამბები.ge</div>
+                    <i class="add-item">Select</i>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/86261417_1077320529280102_1486244274247827456_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=3coijy2--SQAX9b5rYi&_nc_ht=scontent.ftbs6-1.fna&oh=a4c41fcafe318c40997be20a20427c60&oe=6121F5D5" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">POSTV</div>
+                    <i class="add-item">Select</i>
+                </div>
+            </div>
+            
+            <div class="button"> Create a report <i>12K posts, 712 videos found</i></div>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="dashboard-header">
+            <div class="report-title"> Anti West Channels </div>
+            <div class="dashboard-sub-header">
+                from <input type="date" value="2021-06-08"/> to <input type="date" value="2021-07-11"/> - 2.3K posts, 130 videos
+                <div>
+                    <a href="#" > <i class="fas fa-download"></i> Download full data</a>
+                    <a href="#" > <i class="far fa-file-pdf"></i> Download PDF report</a>
+                    <a href="#" > <i class="far fa-trash-alt"></i> Delete the report</a>
+                </div>
+            </div>
+            <div class="item-logo item-multi-logos">
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-9/cp0/c30.0.90.90a/p118x90/221667373_1780467432135947_5792342848504884561_n.png?_nc_cat=105&ccb=1-3&_nc_sid=70495d&_nc_ohc=rLEdpa4fnzkAX8WIPIl&_nc_ht=scontent.ftbs6-1.fna&oh=1fc661c9916641a0ce38a796c2aca515&oe=612264C3" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-9/cp0/c47.0.866.866a/s118x90/29541674_573019473063645_1634631189445452996_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=70495d&_nc_ohc=bZ7MpliL1aYAX8Ew7SL&_nc_ht=scontent.ftbs6-1.fna&oh=e0e0baa77c39db3873c3040627e5b9a5&oe=6121789A" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/32846765_213733512744612_2907879059109183488_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=7206a8&_nc_ohc=XIGH3jTYAS4AX8IvcAp&_nc_ht=scontent.ftbs6-1.fna&oh=f5893f8cb280b74b28380d5e610a346d&oe=612016F9" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/51939214_105210243952698_7303999822841774080_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=7206a8&_nc_ohc=qMCrunFpEVsAX8XR7XT&_nc_ht=scontent.ftbs6-1.fna&oh=34fe34604d81a9435c079cfdf2ae69ae&oe=6120D51B" />
+                <span class="profile-picture count">+31</span>
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Channels analyzed in the report (32/35)
+            </div>
+            <div class='line dashboard-table-header'>
+                <span>Channel</span>
+                <span>Total Posts</span>
+                <span>Videos</span>
+                <span>Themes</span>
+                <span>People Mentioned</span> 
+                <span>People Deteted</span>
+                <span>Hate Speech</span>
+                <span>Symbols</span>
+            </div>
+            <div class="existing-itmes">
+                
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p200x200/187792897_2955412488071948_6187605992762447475_n.png?_nc_cat=106&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=nnXSKBpT25AAX-XfHnM&_nc_ht=scontent.ftbs6-1.fna&oh=a13322ac57c88fd106a0b52da1e1fc44&oe=611EDECE" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">Myth Detector</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/45886682_10157018470719752_2326261558616784896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=dhW3E8bhuLIAX9_sCNu&_nc_ht=scontent.ftbs6-1.fna&oh=83e8d5817cc52fe62e2c5aa758f6e467&oe=612131D5" />
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <div class="item-name">ambebi.ge • ამბები.ge</div>
+                </div>
+                <div class="item incative">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/86261417_1077320529280102_1486244274247827456_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=3coijy2--SQAX9b5rYi&_nc_ht=scontent.ftbs6-1.fna&oh=a4c41fcafe318c40997be20a20427c60&oe=6121F5D5" />
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="item-name">POSTV</div>
+                </div>
+                <div class="item incative">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-9/cp0/c47.0.866.866a/s118x90/29541674_573019473063645_1634631189445452996_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=70495d&_nc_ohc=bZ7MpliL1aYAX8Ew7SL&_nc_ht=scontent.ftbs6-1.fna&oh=e0e0baa77c39db3873c3040627e5b9a5&oe=6121789A" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">Info 24</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p148x148/71718242_1161607410697190_2919291461524520960_n.png?_nc_cat=101&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=qGVMdY8mNoUAX-UYCxo&_nc_ht=scontent.ftbs6-1.fna&oh=b1dbed88d047c940b897b5a422b983ce&oe=6121B4A1" />
+                        <i class="fab fa-viber"></i>
+                    </div>
+                    <div class="item-name">Publica</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t31.18172-1/cp0/p74x74/15304254_1228304067261509_2241489461398828170_o.jpg?_nc_cat=1&ccb=1-3&_nc_sid=dbb9e7&_nc_ohc=mEW1QEGv6NMAX_CIlFC&tn=rhVX4__77HOsdZUC&_nc_ht=scontent.ftbs6-1.fna&oh=0b64ee6074f9089a7e256c8bb0360217&oe=61211498" />
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="item-name">Imedi TV</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/cp0/p80x80/69473894_107069937329792_1262745274359480320_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=dbb9e7&_nc_ohc=i7vbN2sbKZgAX8Ok3N0&_nc_ht=scontent.ftbs6-1.fna&oh=2ad79a7b9646131c6de87ef33e7c0b19&oe=6120DA2B" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">Mtavari</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/72546530_1383478278478142_5028876172075728896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=TmC5M8mXx-4AX9PVl5j&_nc_ht=scontent.ftbs6-1.fna&oh=fcfcfed7cf93ccfb30e7bf96ae21384c&oe=612265F6" />
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="item-name">TV Pirveli</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/84358956_1257309294464568_2663158943638880256_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=RleYO-973_kAX_najfh&_nc_ht=scontent.ftbs6-1.fna&oh=719fa5f79dd40c85aba87a2cf9528e65&oe=61226F3F" />
+                        <i class="fab fa-viber"></i>
+                    </div>
+                    <div class="item-name">Pos TV</div>
+                </div>
+                <div class="item">
+                    <div class="item-logo">
+                        <img class="profile-picture"
+                            src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-1/p100x100/1925279_1480214478865684_1317880383_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=7206a8&_nc_ohc=gvFVgvoOHi4AX-I96fZ&_nc_ht=scontent.ftbs6-1.fna&oh=f790a58a858ccdee8aac1919a10cdf91&oe=61226BA0" />
+                        <i class="fab fa-facebook"></i>
+                    </div>
+                    <div class="item-name">Mtavari</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Posts and videos (1.7k/2.3k)
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class='line dashboard-table-header'>
+                <span>Title</span>
+                <span>Channel</span>
+                <span>Date</span>
+                <span>Themes</span>
+                <span>People Mentioned</span> 
+                <span>People Deteted</span>
+                <span>Hate Speech</span>
+                <span>Symbols</span>
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Themes
+            </div>
+            <div class='line'>
+                <span>LGBTQ+</span>
+                <span>Economics</span>
+                <!-- <span>Videos</span> -->
+                <span>EU</span>
+                <span>Russia</span> 
+                <span>Covid</span>
+                <span>Parlament</span>
+                <!-- <span>Symbols</span> -->
+            </div>
+        </div>
+
+        <div class="dashboard-block" style="height: var(--dashboard-height);">
+            <div class="pop-header">
+                Hate Speech
+            </div>
+            <div class="chart-container" style="position: relative; height:350px; width:100%">
+                <canvas id="myChart"></canvas>
+              </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                People
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class="line"> Mentioned / Appeared - clustering</div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Symbols
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("create-a-report").onclick = () => document.getElementById("create-a-report-pop").style.display = "block"
+        document.querySelector("#create-a-report-pop .close").onclick = () => document.getElementById("create-a-report-pop").style.display = "none"
+
+        pop_headers = [...document.querySelectorAll(".pop-header")]
+        pop_headers.forEach(element => {
+            element.onclick = (e) => {
+                e.target.parentNode.style.height = e.target.parentNode.style.height != 'var(--dashboard-height)' ? 'var(--dashboard-height)'  : 'var(--header-height)'
+            }
+        });
+
+        const labels = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+        ];
+        const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Hate speech activities over time',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45],
+        }]
+        };
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+
+                maintainAspectRatio: false,
+                responsive:true
+            }
+        };
+        var myChart = new Chart(
+            document.getElementById('myChart'),
+            config,
+        );
+        // select only one chennel on double click
+        //report name at create popup   
+    </script>
+</body>
+<!-- DONE add channel yt, fb, tk, vb, tel, tv by programm -->
+
+<!-- DONE
+    Create a new report
+    select the channel
+    
+    select the time interval - from - to (to present) -->
+    
+<!-- + Analyze posts text -->
+<!-- + Analyze posts images -->
+
+<!-- detect lang -->
+
+<!-- person mentiones person
+person mentioes theme -->
+
+<!-- channel profile
+list of videos with - title, create date, duration, text annontation, hate speech score, themes, tf-idf, people in 
+-->
+
+
+<!-- Themes: LGBTQ, Economics, NATO, EU ... 
+People Mentioned: Irakli Gharibashvili, Mikheil Saakashvili...
+Videos: 30
+Total Posts: 15
+People Deteted: Irakli Gharibashvili, Mikheil Saakashvili...
+Hate speech: 43%
+Symbols: Svastika, EU Logo, US Flag, KA Flag -->
+
+<!-- Search videos by - date, channel, person in video, person or term mentioned in title text or descr,  -->
+<!-- Sort videos by - date, hate-speech -->
+
+
+<!-- API 
+search: platform, search_string -> name, profilepic, id
+add: platform, id -> bool
+get_reports: -> list<title, create date, duration, url, image, text annontation, hate speech score, themes/topics, bi-grams?, tf-idf, people in> 
+fetch_report_status 
+-->
+
+
+<!-- k8s
+download
+speech-to-text
+face recognition 
+10 min vs 10 days
+-->
+
+<!-- premium feature archive lookup for added channels -->
+
+<!-- Language detection,  -->
+
+<!-- known Face detection 
+    unknown Face clustering -->
+
+<!-- Object recognition, 
+    detect 
+        naci symbolics,
+        church
+        religious figure
+        eu flag
+        us flag
+        rus flag
+        un logo
+        ....  and cats -->
+
+</html>
