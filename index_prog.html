@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en" data-color-mode="dark" data-light-theme="light" data-dark-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <!-- <link rel="stylesheet" href="style.css" />
+    <script type="application/javascript" src="main.js"></script> -->
+    <meta name="viewport" content="width=device-width">
+    <title>i-can-hear</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --item-height: 50px;
+            --header-height: 60px;
+            --left-bar-size: 300px;
+            --dashboard-height: 430px;
+        }
+
+        body {
+            transform: scale(0.8);
+    width: 125vw;
+    height: 125vh;
+    transform-origin: left top;
+            margin: 0;
+            background: rgb(34, 37, 38);
+        }
+
+        * {
+            color: rgb(184, 184, 184);
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        *::-webkit-scrollbar {
+            width: 1em;
+        }
+
+        *::-webkit-scrollbar-track {
+            /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: #414141;
+            /* outline: 1px solid slategrey; */
+        }
+
+        .item .fas.fa-check{
+            display: none;
+        }
+        .item.active .fas.fa-check{
+            display: block;
+        }
+        i.fas.fa-check {
+            position: absolute;
+            right: 10px;
+            top: 20px;
+            font-size: 11px;
+            color: green;
+        }
+        /* .item.active, */
+        .button.add-button:hover {
+            background: rgba(255, 255, 255, .1);
+
+        }
+        .item:hover{
+            background: rgba(255, 255, 255, .05);
+        }
+        /* .item.active:hover{
+            background: rgba(255, 255, 255, .15);
+        } */
+        .button.add-button:hover i {
+            color: rgb(18, 184, 101);
+        }
+
+        .left-bar {
+            width: var(--left-bar-size);
+            position: fixed;
+            height: 100%;
+            background: #2d2d2d;
+            /* overflow: hidden; */
+            transition: .3s;
+            z-index: 95;
+        }
+        .hide-menu .left-bar{
+            left: -300px;
+        }
+        .hide-menu .left-bar .left-footer{
+            left: 60px;
+        }
+        .pop-up {
+            width: calc(100% - 2*var(--left-bar-size) - 30px);
+            position: fixed;
+            height: 80%;
+            left: calc(var(--left-bar-size) + 15px);
+            top: 55px;
+            background: #2d2d2d;
+            overflow: hidden;
+        }
+
+        .button.add-button {
+            width: 100%;
+            height: 51px;
+            display: flex;
+            align-items: center;
+            padding-left: 60px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, .4);
+            font-size: 13px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            position: relative;
+        }
+
+        .button.add-button i{
+
+            font-size: 27px;
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            font-weight: bold;
+        }
+        .filter-header i {
+            
+            font-size: 27px;
+            position: absolute;
+            font-weight: bold;
+            width: 60px;
+            height: 60px;
+            right: 0;
+            top: 0;
+            display: flex;
+            /* align-items: center; */
+            justify-content: center;
+            cursor: pointer;
+            padding-top: 9px;
+        }
+        .filter-header i:hover{
+            background: rgba(255, 255, 255, .1);
+            color: #078c07;
+        }
+        .existing-itmes {
+            width: 100%;
+            height: calc(100% - 121px);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .left-bar .existing-itmes {
+            height: calc(100% - 61px);
+        }
+
+        .pop-up .existing-itmes {
+            height: calc(100% - 273px);
+        }
+
+        .item {
+            height: var(--item-height);
+            width: 100%;
+            position: relative;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .item input {
+            margin-top: 13px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .item-logo {
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            height: 40px;
+            width: 40px;
+        }
+
+        .profile-picture {
+            border-radius: 100%;
+            overflow: hidden;
+            width: 30px;
+            height: 30px;
+            margin-top: 5px;
+            position: absolute;
+        }
+
+        .item-logo i {
+            width: 16px;
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+        }
+
+        .item-name {
+            position: absolute;
+            left: 60px;
+            height: var(--item-height);
+            top: 0;
+            width: calc(100% - 60px);
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        #existing-locations-list .item-name, 
+        #existing-entities-list .item-name, 
+        #existing-topics-list .item-name{
+            left: 15px;
+        }
+        .remove-item,
+        .add-item {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 40px;
+            right: 0;
+        }
+
+        .add-item {
+            font-style: normal;
+            right: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #078c07;
+        }
+
+        .remove-item i {
+            content: '+';
+            transform: rotate(45deg);
+            font-size: 31px;
+            opacity: .1;
+        }
+
+        .remove-item:hover i {
+            opacity: .7;
+            color: salmon
+        }
+
+        .line {
+            width: 100%;
+            height: 51px;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, .4);
+            font-size: 13px;
+            justify-content: space-evenly;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .chennel-menu-itme {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 23px;
+            cursor: pointer;
+            opacity: .4;
+
+        }
+
+        .chennel-menu-itme.active,
+        .chennel-menu-itme:hover {
+            background: rgba(0, 0, 0, .4);
+            opacity: 1;
+        }
+
+        .fa-facebook {
+            color: #3b5998
+        }
+
+        .fa-youtube {
+            color: #ff0000
+        }
+
+        .fa-viber {
+            color: #12af0a
+        }
+
+        .fa-telegram {
+            color: #2ca5e0
+        }
+
+        .chennel-menu-itme svg {
+            width: 20px
+        }
+
+        .chennel-menu-itme img {
+            width: 20px;
+        }
+
+        .pop-header, .filter-header {
+            height: var(--header-height);
+            display: flex;
+            width: 100%;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+            padding-left: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            position: relative;
+            justify-content: space-between;
+        }
+        .pop-header span{
+            padding-right: 15px;
+            color: rgba(255, 255, 255, .4);
+        }
+        .invert {
+            filter: invert(1);
+        }
+
+        input {
+            background: rgba(255, 255, 255, .1);
+            border: none;
+            padding: 0 14px;
+            outline: none;
+        }
+
+        .line input {
+            height: 69%;
+        }
+        .line-taller {
+            height: 80px;
+        }
+        #channel-search-input {
+            width: calc(100% - 20px);
+            font-size: 20px;
+        }
+
+        #filter-date-from,
+        #filter-date-to,
+        #date-from,
+        #date-to {
+            width: 48%;
+        }
+
+        .item-report {
+            height: 70px;
+        }
+
+        .item-footer {
+            position: absolute;
+            height: calc(100% - var(--item-height));
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            /* align-items: center; */
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            padding-left: 10px;
+        }
+
+        .item-report .item-name {
+            left: 0;
+            padding-left: 15px;
+            width: calc(100% - 120px);
+        }
+
+        .item-logo.item-multi-logos {
+            left: auto;
+            right: 15px;
+            width: 110px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(1) {
+            right: 0px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(2) {
+            right: 20px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(3) {
+            right: 40px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture:nth-child(4) {
+            right: 60px;
+        }
+
+        .item-logo.item-multi-logos .profile-picture.count {
+            font-weight: bold;
+            font-size: 13px;
+            font-style: inherit;
+            /* height: var(--item-height); */
+            align-items: center;
+            display: flex;
+            background-color: rgba(0, 0, 0, .8);
+            width: 34px;
+            height: 34px;
+            top: -2px;
+            justify-content: center;
+        }
+
+        .pop-bg {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .7);
+            display: none;
+        }
+
+        .pop-header .close {
+            position: absolute;
+            right: 0;
+            width: var(--header-height);
+            height: 100%;
+            background: rgba(255, 255, 255, .1);
+            cursor: pointer;
+        }
+
+        .close i {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+            width: 100%;
+            height: 100%;
+            font-size: 25px;
+        }
+
+        .close:hover i {
+            color: tomato;
+        }
+
+        .left-footer {
+            position: absolute;
+            bottom: 0;
+            background: rgba(255, 255, 255, .1);
+            height: var(--header-height);
+            justify-content: left;
+            padding-left: 15px;
+            left: 0;
+            transition: .3s;
+        }
+
+        .left-footer i {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, .1);
+            font-size: 14px;
+        }
+
+        .left-footer i:hover {
+            color: salmon
+        }
+
+        #dashboard {
+            position: fixed;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: calc(100% - var(--left-bar-size));
+            right: 0;
+            padding: 15px;
+            top: 100px;
+            transition: .3s;
+        }
+        .hide-menu #dashboard{
+            width: 100%;
+            /* left: 0 */
+        }
+        .dashboard-header {
+            transition: .3s;
+            z-index: 90;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: calc(100% - var(--left-bar-size));
+            height: 100px;
+            background: rgb(57 59 60);
+            padding-left: 18px;
+        }
+        .hide-menu .dashboard-header{
+            width: 100%;
+            /* left: 0 */
+        }
+        .report-title {
+            width: 80%;
+            height: 60px;
+            font-size: 21px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-sub-header {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            position: relative;
+            margin-top: 6px;
+        }
+
+        .dashboard-sub-header>div {
+            position: absolute;
+            right: 20px;
+            top: 0;
+        }
+
+        .dashboard-sub-header>div a {
+            padding-left: 15px;
+        }
+
+        .dashboard-sub-header>div a:hover {
+            color: rgba(255, 255, 255, .4)
+        }
+
+        .dashboard-header .item-multi-logos {
+            top: 12px;
+            right: 30px;
+        }
+
+        .dashboard-block {
+            width: 100%;
+            position: relative;
+            height: var(--header-height);
+            background: #2d2d2d;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .dashboard-block.active{
+
+            height: var(--dashboard-height);
+        }
+        .dashboard-block .pop-header {
+            cursor: pointer;
+        }
+
+        .dashboard-block .existing-itmes {
+            height: calc(100% - 62px);
+        }
+
+        .dashboard-table-header {
+            justify-content: inherit;
+            /* padding: 0 10px; */
+        }
+
+        .dashboard-table-header span {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid rgba(255, 255, 255, .1);
+            padding-left: 10px;
+            font-size: 11px;
+        }
+
+        .dashboard-block .existing-itmes .item {
+            display: flex;
+        }
+
+        .dashboard-block .existing-itmes .item > div {
+            padding-left: 10px;
+            padding-top: 4px;
+            word-break: break-all;
+            overflow: hidden;
+        }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(1), #chennels-list-aggregated .dashboard-table-header span:nth-child(1) { width: 26%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(2), #chennels-list-aggregated .dashboard-table-header span:nth-child(2) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(3), #chennels-list-aggregated .dashboard-table-header span:nth-child(3) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(4), #chennels-list-aggregated .dashboard-table-header span:nth-child(4) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(5), #chennels-list-aggregated .dashboard-table-header span:nth-child(5) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(6), #chennels-list-aggregated .dashboard-table-header span:nth-child(6) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(7), #chennels-list-aggregated .dashboard-table-header span:nth-child(7) { width: 10.6%; }
+
+        #chennels-list-aggregated .existing-itmes .item div:nth-child(8), #chennels-list-aggregated .dashboard-table-header span:nth-child(8) { width: 10.6%; }
+
+        .item.incative>* {
+            opacity: .2;
+        }
+
+        .loader-cont {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            border: 5px solid rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            width: 30px;
+            height: 30px;
+            -webkit-animation: spin 1s linear infinite;
+            /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .pop-up .button {
+            cursor: pointer;
+            width: 100%;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .4);
+            font-size: 14px;
+        }
+
+        .pop-up .button i {
+            font-size: 11px;
+            opacity: .7;
+            padding-left: 7px;
+        }
+
+        .pop-up .button:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: .5;
+            width: 20px;
+            cursor: pointer;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-header input {
+            cursor: pointer;
+            background: none;
+            width: 95px;
+            padding: 0 2px;
+            font-size: 12px;
+        }
+
+        .dashboard-header input:hover {
+            color: rgba(255, 255, 255, .4);
+        }
+
+        .left-bar{
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            left:0;
+        }
+        .filter-block{
+            width: 100%;
+            transition: .3s;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+            height: var(--header-height);
+            overflow: hidden;
+        }
+        .filter-header{
+            cursor: pointer;
+            /* border-bottom: none; */
+            /* border-bottom: 1px solid rgba(255, 255, 255, .1); */
+        }
+        .filter-block.active{
+            height: calc(100% - calc(10 * var(--header-height)));
+            background: rgba(0, 0, 0, .4);
+        }
+        .filter-block label{
+            width: 40%;
+        }
+        .filter-info{
+            height: var(--header-height);
+            padding-left: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;        
+            background: rgba(255, 255, 255, .03);
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+    <div class="left-bar">
+        
+        <div class="filter-block">
+            <div class="filter-header" >Channels <i id="add-a-channel-btn">+</i></div>
+            <div id="existing-channels-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Topics <i id="add-a-topic-btn">+</i></div>
+            <div id="existing-topics-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Dates</div>
+            <div class="filter-info">
+                Please specify the interval for the posts to be analyzed
+            </div>
+            <div class="line">
+                <label>From: </label><input id="filter-date-from" type="date" value="2021-07-01"/>
+            </div>
+            <div class="line">
+                <label>To: </label><input id="filter-date-to" type="date" />
+            </div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Persons <i id="add-a-person-btn">+</i></div>
+            <div id="existing-persons-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Symbols <i id="add-a-symbol-btn">+</i></div>
+            <div id="existing-symbols-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Locations</div>
+            <div id="existing-locations-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Entities</div>
+            <div id="existing-entities-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Platforms</div>
+            <div id="existing-platforms-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Hate Speech Targets</div>
+            <div id="existing-targets-list" class="existing-itmes"></div>
+        </div>
+        <div class="filter-block">
+            <div class="filter-header">Channel Category</div>
+            <div id="existing-categories-list" class="existing-itmes"></div>
+        </div>
+        <div class="line left-footer">
+            Logged in as Davit Janezashvili <i class="fas fa-filter" id="toggle-filters"></i>
+        </div>
+    </div>
+
+    <div class="pop-bg" id="add-a-channel-pop">
+        <div class="pop-up">
+            <div class="pop-header">
+                Add a channel <div class="close"><i>+</i></div>
+            </div>
+            <div class="line">
+                <div class="chennel-menu-itme active" title="facebook">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.6435-9/58978526_10158354585751729_7411073224387067904_n.png?_nc_cat=1&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=VH9P8QeGSE0AX-rnjLJ&_nc_ht=scontent.ftbs4-1.fna&oh=4786076af74eba3d5e0d262860398c4e&oe=612D36D5" />
+                </div>
+                <div class="chennel-menu-itme" title="youtube">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.6435-9/66293496_10158496818691754_3969510587162951680_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=H7QpGGTnk78AX-CxTMU&tn=rhVX4__77HOsdZUC&_nc_ht=scontent.ftbs4-1.fna&oh=ecf376d795e3c81adca9461cec34c656&oe=612DE640" />
+                </div>
+                <div class="chennel-menu-itme" title="tiktok">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.6435-9/38200127_936914206478902_8945096849434345472_n.png?_nc_cat=1&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=BCXLmCwFi-UAX9TxM2F&tn=rhVX4__77HOsdZUC&_nc_ht=scontent.ftbs4-1.fna&oh=b850d57c90235bc58f17177b92cc2c0d&oe=612E9403" />
+                </div>
+                <div class="chennel-menu-itme" title="twitter">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.6435-9/151779888_3850339665022826_3221997795278020924_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=wyRFvB_SvmsAX-JAaWP&_nc_ht=scontent.ftbs4-1.fna&oh=ef75f086cdecf04708b071320e05a375&oe=612D940B" />
+                </div>
+                <div class="chennel-menu-itme" title="telegram">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t39.30808-6/227400861_217347067062005_7783282287808445318_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eYWfjZJoJywAX82rawk&_nc_ht=scontent.ftbs4-1.fna&oh=fc9cd87c6d0f3e39d441bdf7759e8ad1&oe=610E0024" />
+                </div>
+                <div class="chennel-menu-itme" title="viber">
+                    <img src="https://scontent.ftbs4-1.fna.fbcdn.net/v/t1.6435-9/51813460_2676456799061808_3614147784820654080_n.png?_nc_cat=110&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=ziPOZYeUG2AAX_nh7UV&_nc_ht=scontent.ftbs4-1.fna&oh=aeed59dc9a815b4c2c7e825334d09ada&oe=612D168D"/>
+                </div>
+                <div class="chennel-menu-itme" title="tv pirveli"><img
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/72546530_1383478278478142_5028876172075728896_n.png?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=TmC5M8mXx-4AX9PVl5j&_nc_ht=scontent.ftbs6-1.fna&oh=fcfcfed7cf93ccfb30e7bf96ae21384c&oe=612265F6" />
+                </div>
+                <div class="chennel-menu-itme" title="rustavi2"><img
+                        src="https://static.myvideo.ge/media/cache/image/15403/0ad88260-d6a0-11e8-92cc-9f7ea6b37d3e_100x100.png" />
+                </div>
+                <div class="chennel-menu-itme" title="mtavari"><img
+                        src="https://static.myvideo.ge/media/cache/image/15681/22913180-d30e-11e9-b954-313437ef31a2_100x100.png" />
+                </div>
+                <div class="chennel-menu-itme" title="public bradcaster"><img
+                        src="https://static.myvideo.ge/media/cache/image/15078/6db1a9e0-ae59-11e7-8bce-451e8c8199ef_100x100.png" />
+                </div>
+                <div class="chennel-menu-itme" title="post tv"><img
+                        src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/84358956_1257309294464568_2663158943638880256_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=RleYO-973_kAX_najfh&_nc_ht=scontent.ftbs6-1.fna&oh=719fa5f79dd40c85aba87a2cf9528e65&oe=61226F3F" />
+                </div>
+                <div class="chennel-menu-itme" title="formula"><img class="invert"
+                        src="https://static.myvideo.ge/media/cache/image/15738/d110ba00-06e3-11ea-9c12-17cd430ed5c3_100x100.png" />
+                </div>
+            </div>
+            <div class="line line-taller">
+                <input id="channel-search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class="existing-itmes">
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <div class="dashboard-header">
+            <div class="report-title">Dashboard</div>
+            <div class="dashboard-sub-header">
+                from <input type="date" value="2021-06-08" /> to <input type="date" value="2021-07-11" /> - 2.3K posts,
+                130 videos
+                <div>
+                    <a href="#"> <i class="fas fa-download"></i> Download data</a>
+                    <a href="#"> <i class="far fa-file-pdf"></i> Download PDF report</a>
+                    <a href="#"> <i class="far fa-trash-alt"></i> Delete the report</a>
+                </div>
+            </div>
+            <div class="item-logo item-multi-logos">
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-9/cp0/c30.0.90.90a/p118x90/221667373_1780467432135947_5792342848504884561_n.png?_nc_cat=105&ccb=1-3&_nc_sid=70495d&_nc_ohc=rLEdpa4fnzkAX8WIPIl&_nc_ht=scontent.ftbs6-1.fna&oh=1fc661c9916641a0ce38a796c2aca515&oe=612264C3" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.18169-9/cp0/c47.0.866.866a/s118x90/29541674_573019473063645_1634631189445452996_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=70495d&_nc_ohc=bZ7MpliL1aYAX8Ew7SL&_nc_ht=scontent.ftbs6-1.fna&oh=e0e0baa77c39db3873c3040627e5b9a5&oe=6121789A" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/32846765_213733512744612_2907879059109183488_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=7206a8&_nc_ohc=XIGH3jTYAS4AX8IvcAp&_nc_ht=scontent.ftbs6-1.fna&oh=f5893f8cb280b74b28380d5e610a346d&oe=612016F9" />
+                <img class="profile-picture"
+                    src="https://scontent.ftbs6-1.fna.fbcdn.net/v/t1.6435-1/p100x100/51939214_105210243952698_7303999822841774080_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=7206a8&_nc_ohc=qMCrunFpEVsAX8XR7XT&_nc_ht=scontent.ftbs6-1.fna&oh=34fe34604d81a9435c079cfdf2ae69ae&oe=6120D51B" />
+                <span class="profile-picture count">+31</span>
+            </div>
+        </div>
+
+        <div class="dashboard-block" id="chennels-list-aggregated">
+            <div class="pop-header">
+                Channels analyzed in the report <span>32/35</span>
+            </div>
+            <div class='line dashboard-table-header'>
+                <span>Channel</span>
+                <span>Total Posts</span>
+                <span>Videos</span>
+                <span>Themes</span>
+                <span>People Mentioned</span>
+                <span>People Deteted</span>
+                <span>Hate Speech</span>
+                <span>Symbols</span>
+            </div>
+            <div class="existing-itmes">
+                Loading...
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Posts and videos <span>1.7k/2.3k</span>
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class='line dashboard-table-header'>
+                <span>Title</span>
+                <span>Channel</span>
+                <span>Date</span>
+                <span>Themes</span>
+                <span>People Mentioned</span>
+                <span>People Deteted</span>
+                <span>Hate Speech</span>
+                <span>Symbols</span>
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Interactions
+            </div>
+            likes / Disslices / Comments / Views
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Topics
+            </div>
+            <div class='line'>
+                <span>LGBTQ+</span>
+                <span>Economics</span>
+                <!-- <span>Videos</span> -->
+                <span>EU</span>
+                <span>Russia</span>
+                <span>Covid</span>
+                <span>Parlament</span>
+                <!-- <span>Symbols</span> -->
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Hate-O-Meter
+            </div>
+            <div class="chart-container" style="position: relative; height:100%; width:100%">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Geographic Locations
+            </div>
+            <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=27.55804009189165%2C38.90113290303379%2C55.814876029391655%2C50.38177210944508&amp;layer=mapnik">
+            </iframe>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                People
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+            <div class="line"> Mentioned / Appeared - clustering</div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Symbols
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+        </div>
+
+        <div class="dashboard-block">
+            <div class="pop-header">
+                Graph
+            </div>
+            <div class="line">
+                <input id="search-input" placeholder="put the channel name here..." />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //api
+        // http://.ngrok.io 51cca18aac85.ngrok.io
+        url = 'https://7324b19c5ca8.ngrok.io'
+
+        //utils
+        const debounce = (callback, wait) => {
+            let timeoutId = null;
+            return (...args) => {
+                window.clearTimeout(timeoutId);
+                timeoutId = window.setTimeout(() => {
+                    callback.apply(null, args);
+                }, wait);
+            };
+        }
+        // dashboardblocks
+        document.getElementById("add-a-channel-btn").onclick = () => document.getElementById("add-a-channel-pop").style.display = "block"
+        document.querySelector("#add-a-channel-pop .close").onclick = () => document.getElementById("add-a-channel-pop").style.display = "none"
+        
+        //toggle filters
+        document.getElementById("toggle-filters").onclick = () => {
+            document.body.classList.toggle("hide-menu")
+        }
+
+        //filters header
+        var curt 
+        filter_headers = [...document.querySelectorAll(".filter-header")]
+        filter_headers.forEach(element => {
+            
+            element.onclick = (e) => {
+                if([...e.currentTarget.classList].includes("filter-header")){
+                    filter_headers.forEach(element => element.parentNode.classList.remove('active'))
+                    e.currentTarget.parentNode.classList.add('active')
+                }
+            }
+        });
+
+        //pop header
+        pop_headers = [...document.querySelectorAll(".dashboard-block .pop-header")]
+        pop_headers.forEach(element => {
+            element.onclick = (e) => {
+                e.currentTarget.parentNode.classList.toggle('active')
+            }
+            element.ondblclick = (e) => {
+                e.currentTarget.parentNode.style.height = e.currentTarget.parentNode.style.height = 'calc(100vh - 130px)'
+                document.getElementById('dashboard').scrollTop = e.currentTarget.parentNode.offsetTop - 15
+            }
+        });
+
+        
+        // drow left-bar dom
+
+        const toggleTheFilterItem = (e) => {
+            if ([...e.currentTarget.classList].includes('active')){
+                e.currentTarget.classList.remove('active')
+                index = global_filters[e.currentTarget.getAttribute('data-filter')].indexOf(e.currentTarget.getAttribute('data-id'))
+                global_filters[e.currentTarget.getAttribute('data-filter')].splice(index, 1)
+            } else {
+                global_filters[e.currentTarget.getAttribute('data-filter')].push(e.currentTarget.getAttribute('data-id'))
+                e.currentTarget.classList.add('active')
+            }
+            drow_dashboards()
+        }
+
+        const selectOneFilterItem = (e) => {
+            e.currentTarget.parentNode.querySelectorAll('.item').forEach(el => el.classList.remove("active"))
+            e.currentTarget.classList.add('active')
+            global_filters[e.currentTarget.getAttribute('data-filter')] = [e.currentTarget.getAttribute('data-id')]
+            drow_dashboards()
+        }
+        
+        const drow_filter = (item, type) => {
+            // console.log(item.title, type)
+            let existing_list = document.getElementById("existing-"+ type +"-list")
+            let item_cont = document.createElement('div')
+            item_cont.className = "item active"
+            item_cont.setAttribute("data-id", item.title)
+            item_cont.setAttribute("data-filter", type)
+            item.dom = item_cont
+            existing_list.appendChild(item_cont)  
+            if(type == 'channels'){
+                item_cont.innerHTML +=  `<div class="item-logo"><img class="profile-picture" src="` + item.img + `" />
+                <i class="fab fa-` + item.platform + `"></i></div>`
+            }
+            if(type == 'persons' || type == 'symbols' || type == 'platforms'){
+                item_cont.innerHTML +=  `<div class="item-logo"><img class="profile-picture" src="` + item.img + `" /></div>`
+            }
+            item_cont.innerHTML += `<div class="item-name">` + item.title + ` </div><i class="fas fa-check"></i>`
+            item_cont.onclick = toggleTheFilterItem
+            item_cont.ondblclick = selectOneFilterItem  
+        }
+        
+        //filter-dates
+        let global_filters = {}
+
+        global_filters.date = {
+            from: new Date(2021, 1, 1),
+            to: new Date()
+        }
+        document.getElementById('filter-date-from').valueAsDate = global_filters.date.from;
+        document.getElementById('filter-date-to').valueAsDate = global_filters.date.to;
+        document.getElementById('filter-date-from').onchange = (e) => {
+            global_filters.date.from = new Date(e.target.value)
+            drow_dashboards()
+        }
+        document.getElementById('filter-date-to').onchange = (e) => {
+            global_filters.date.to = new Date(e.target.value)
+            drow_dashboards()
+        }
+        //filter channels
+
+
+        //get initial data
+        let global_data = {}
+        const fetch_initial_data = async () => {
+            const [topics, channels, persons, symbols, locations, entities, platforms, categories] = await Promise.all([
+                fetch(url + '/get_topics').then(response => response.json()),
+                fetch(url + '/get_channels').then(response => response.json()),
+                fetch(url + '/get_persons').then(response => response.json()),
+                fetch(url + '/get_symbols').then(response => response.json()),
+                fetch(url + '/get_locations').then(response => response.json()),
+                fetch(url + '/get_entities').then(response => response.json()),
+                fetch(url + '/get_platforms').then(response => response.json()),
+                fetch(url + '/get_categories').then(response => response.json()),
+                
+            ]);
+            global_data.topics = topics
+            global_data.channels = channels
+            global_data.persons = persons
+            global_data.symbols = symbols
+            global_data.locations = locations
+            global_data.entities = entities
+            global_data.platforms = platforms
+            global_data.categories = categories
+            
+            
+            global_filters.topics = topics.map(i => i.title)
+            global_filters.channels = channels.map(i => i.title)
+            global_filters.persons = persons.map(i => i.title)
+            global_filters.symbols = symbols.map(i => i.title)
+            global_filters.locations = locations.map(i => i.title)
+            global_filters.entities = entities.map(i => i.title)
+            global_filters.platforms = platforms.map(i => i.title)
+            global_filters.categories = platforms.map(i => i.categories)
+        }
+
+        const drow_the_filters = () => {
+            global_data.topics.forEach(item => drow_filter(item, "topics"))
+            global_data.channels.forEach(item => drow_filter(item, "channels"))
+            global_data.persons.forEach(item => drow_filter(item, "persons"))
+            global_data.symbols.forEach(item => drow_filter(item, "symbols"))
+            global_data.locations.forEach(item => drow_filter(item, "locations"))
+            global_data.entities.forEach(item => drow_filter(item, "entities"))
+            global_data.platforms.forEach(item => drow_filter(item, "platforms"))
+            global_data.categories.forEach(item => drow_filter(item, "categories"))
+            
+        }
+
+        //add channels popup
+        const showSuggestions = suggestions => {
+            let suggestionsCont = document.querySelector('#add-a-channel-pop .existing-itmes')
+            suggestionsCont.innerHTML = ''
+            suggestions.forEach(suggestion => {
+                suggestionsCont.innerHTML += `<div class="item">
+                        <div class="item-logo">
+                            <img class="profile-picture"
+                                src="`+ suggestion.img + `" />
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <div class="item-name">` + suggestion.title + `</div>
+                        <i class="add-item">Select</i>
+                    </div>`
+            })
+        }
+
+        let chennel_search_platform = 'facebook'
+
+        const set_chennel_search_platform = e => {
+            // console.log(e.currentTarget)
+            chennel_menu_items.forEach(el => el.classList.remove('active'))
+            // debugger
+            e.currentTarget.classList.add('active')
+            chennel_search_platform = e.currentTarget.getAttribute('title')
+        }
+
+        chennel_menu_items = [...document.getElementsByClassName('chennel-menu-itme')]
+
+        chennel_menu_items.forEach(el => el.onclick = set_chennel_search_platform)
+
+        document.getElementById('channel-search-input').onkeyup = debounce((ev) => {
+            let postBody = new URLSearchParams();
+
+            postBody.append('platform', chennel_search_platform);
+            postBody.append('query', ev.target.value);
+
+            fetch(url + '/search_channel', { method: 'post', body: postBody }).then(response => response.json())
+                .then(showSuggestions);
+        }, 1000);
+
+        //chart
+
+        var groupBy = function(xs, key) {
+            return xs.reduce(function(rv, x) {
+                (rv[x[key]] = rv[x[key]] || []).push(x);
+                return rv;
+            }, {});
+        };
+
+
+        //drow_dashboards
+
+        const drow_chennels_list = (filtered_data) => {
+            let dom = document.querySelector("#chennels-list-aggregated .existing-itmes")
+            dom.innerHTML = ''
+            filtered_data.channels.forEach(channel => {
+                posts = filtered_data.posts.filter(post => post.channel == channel.title)
+                let row = document.createElement('div')
+                row.className = 'item'
+                dom.appendChild(row)
+                row.innerHTML = `<div><div class="item-logo"><img class="profile-picture" src="` + channel.img + `" /><i class="fab fa-` + channel.platform + `"></i></div>
+                    <div class="item-name">` + channel.title + `</div></div>
+                    <div>` + posts.length + `</div>
+                    <div>` + posts.filter(post => post["Total Views"] > 0).length + `</div>
+                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.topics), []))] + `</div>
+                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_mentioned), []))] + `</div>
+                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_appeared), []))] + `</div>
+                    <div>` + (posts.reduce((a, b) =>  a + b.hate_speech , 0) / posts.length) + `</div>
+                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.symbols), []))] + `</div>`
+            })
+            
+           
+        }
+        let charts = {}
+        const drow_hate_speech = (filtered_data) => {
+            if (charts.hate_speech) charts.hate_speech.destroy()
+            let grouped = groupBy(filtered_data.posts, 'Post Created Date')
+            let values = Object.keys(grouped).map(date => grouped[date].reduce((a, b) => a + b.hate_speech, 0)/grouped[date].length)
+            let data = {
+                labels: Object.keys(grouped),
+                datasets: [{
+                    label: 'Hate speech activities over time',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: values,
+                }]
+            }
+            let config = {
+                type: 'line',
+                data: data,
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true
+                }
+            };
+            charts.hate_speech = new Chart(
+                document.getElementById('myChart'),
+                config,
+            );
+        }
+
+        const drow_dashboards = () => {
+            // debugger
+            filtered_data = {
+                posts: global_data.posts.filter(post => new Date(post['Post Created Date']) > global_filters.date.from && 
+                    new Date(post['Post Created Date']) < global_filters.date.to &&
+                    global_filters.entities.filter(value => post.entities.includes(value)).length > 0 ),
+                channels: global_data.channels.filter(channel => global_filters.channels.indexOf(channel.title) > -1 )
+            }
+            // filtered_data = global_data
+            drow_hate_speech(filtered_data)
+            drow_chennels_list(filtered_data)
+        }
+
+        //init
+
+        const init = async () => {
+            await fetch_initial_data()
+            drow_the_filters()
+            await fetch(url + '/get_posts').then(response => response.json()).then(posts => global_data.posts = posts),
+            drow_dashboards()
+        }
+        init()
+
+        // select only one chennel on double click
+        //report name at create popup   
+    </script>
+</body>
+
+<!-- Content discovery --- Integrations --- firehose -->
+
+<!-- NER for person location and organization and... detection -->
+
+<!-- neo4j topic to chanell to person to symbol to hatespeech in dashboeard block -->
+<!-- Institutions/Organisations -->
+<!-- one large search box -->
+<!-- token classification hate speech - generate data synthesis -->
+
+<!-- collect-analyze-visualize
+ingegrations - mlsss - uxxx -->
+
+<!-- intial UI select: topic, person, period -->
+
+<!-- create edit: topics, people, symbols, - upload images  -->
+
+<!-- the bset UX is to talk 
+    We are also working to implement speech-to-text search box, that is going to filter the results using human language - "Show me hate speech posts about EU, from last week" ...
+(show me) (the posts) (from channel) (about/topic) (for last [pariod]two weeks) -->
+
+<!-- DONE add channel yt, fb, tk, vb, tel, tv by programm -->
+
+<!-- DONE
+    Create a new report
+    select the channel
+    
+    select the time interval - from - to (to present) -->
+
+<!-- + Analyze posts text -->
+<!-- + Analyze posts images -->
+
+<!-- detect lang -->
+
+<!-- person mentiones person
+person mentioes theme -->
+
+<!-- channel profile
+list of videos with - title, create date, duration, text annontation, hate speech score, themes, tf-idf, people in 
+-->
+<!-- Collocationsf -->
+
+<!-- Themes: LGBTQ, Economics, NATO, EU ... 
+People Mentioned: Irakli Gharibashvili, Mikheil Saakashvili...
+Videos: 30
+Total Posts: 15
+People Deteted: Irakli Gharibashvili, Mikheil Saakashvili...
+Hate speech: 43%
+Symbols: Svastika, EU Logo, US Flag, KA Flag -->
+
+<!-- Search videos by - date, channel, person in video, person or term mentioned in title text or descr,  -->
+<!-- Sort videos by - date, hate-speech -->
+
+<!-- video popup Search keywords in video, or anything in video -->
+
+<!-- API 
+search: platform, search_string -> name, profilepic, id
+add: platform, id -> bool
+get_reports: -> list<title, create date, duration, url, image, text annontation, hate speech score, themes/topics, bi-grams?, tf-idf, people in> 
+fetch_report_status 
+-->
+
+<!-- 
+    reach out
+    like
+    disslike
+    comments
+-->
+
+<!-- Add theme by keywords and (OR) (NOT) syntax -->
+<!-- Label persons -->
+
+<!-- k8s
+download
+speech-to-text
+face recognition 
+10 min vs 10 days
+-->
+
+<!-- premium feature archive lookup for added channels -->
+
+<!-- Language detection,  -->
+
+<!-- known Face detection 
+    unknown Face clustering -->
+
+<!-- Object recognition, 
+    detect 
+        naci symbolics,
+        church
+        religious figure
+        eu flag
+        us flag
+        rus flag
+        un logo
+        ....  and cats -->
+
+<!-- UI Video pop-up search input with all video params search-->
+
+<!-- data collection -> fb, instagram, tw, yt, tiktok, telegram, viber, vk, ok, tv/radio, + text scrapping
+video download
+audio extraction
+
+
+open sourcing data & model for further research
+crowdsourcing data - andjara net, imovies .... tv-s ყველა გამხმოვანებელი, saba - audiobooks  ACT
+
+speech-to-text google-cloud, text form image OCR, image labeling, 
+
+person identification, face-recognition, voice recognition - profiling 
+clustering
+
+text analysis - classification, hate speech - discraditing , topic labeling, 
+
+scaling ukrain, moldova, azerbaijan, armenia 
+
+full pipeline automation
+
+UI ?
+
+tagging platform, from presenter
+
+archiving? 
+
+Ana?
+
+
+automatic translation - mywidao - 
+
+speaker clustering and chanell separation -->
+
+</html>
