@@ -25,6 +25,8 @@
     transform-origin: left top;
             margin: 0;
             background: rgb(34, 37, 38);
+            position: fixed;
+            overflow: hidden;
         }
 
         * {
@@ -463,7 +465,7 @@
 
         #dashboard {
             position: fixed;
-            height: 100%;
+            height: calc(100% - 100px);
             overflow-x: hidden;
             overflow-y: auto;
             width: calc(100% - var(--left-bar-size));
