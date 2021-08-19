@@ -963,7 +963,7 @@
     <script>
         //api
         // http://.ngrok.io 51cca18aac85.ngrok.io
-        url = 'https://7324b19c5ca8.ngrok.io'
+        url = 'https://dbe20eeaafc0.ngrok.io'
 
         //utils
         const debounce = (callback, wait) => {
@@ -1176,18 +1176,18 @@
             dom.innerHTML = ''
             filtered_data.channels.forEach(channel => {
                 posts = filtered_data.posts.filter(post => post.channel == channel.title)
-                let row = document.createElement('div')
+                let row = document.createElement('tr')
                 row.className = 'item'
                 dom.appendChild(row)
-                row.innerHTML = `<div><div class="item-logo"><img class="profile-picture" src="` + channel.img + `" /><i class="fab fa-` + channel.platform + `"></i></div>
-                    <div class="item-name">` + channel.title + `</div></div>
-                    <div>` + posts.length + `</div>
-                    <div>` + posts.filter(post => post["Total Views"] > 0).length + `</div>
-                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.topics), []))] + `</div>
-                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_mentioned), []))] + `</div>
-                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_appeared), []))] + `</div>
-                    <div>` + (posts.reduce((a, b) =>  a + b.hate_speech , 0) / posts.length) + `</div>
-                    <div>` + [...new Set(posts.reduce((a, b) => a.concat(b.symbols), []))] + `</div>`
+                row.innerHTML = `<td><div class="item-logo"><img class="profile-picture" src="` + channel.img + `" /><i class="fab fa-` + channel.platform + `"></i></div>
+                    <div class="item-name">` + channel.title + `</div></td>
+                    <td>` + posts.length + `</td>
+                    <td>` + posts.filter(post => post["Total Views"] > 0).length + `</td>
+                    <td>` + [...new Set(posts.reduce((a, b) => a.concat(b.topics), []))] + `</td>
+                    <td>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_mentioned), []))] + `</td>
+                    <td>` + [...new Set(posts.reduce((a, b) => a.concat(b.persons_appeared), []))] + `</td>
+                    <td>` + (posts.reduce((a, b) =>  a + b.hate_speech , 0) / posts.length) + `</td>
+                    <td>` + [...new Set(posts.reduce((a, b) => a.concat(b.symbols), []))] + `</td>`
             })
             
            
@@ -1247,6 +1247,11 @@
         //report name at create popup   
     </script>
 </body>
+
+<!-- video popup speaker separate by coloures --- and profile pictures -->
+<!-- Totals -->
+<!-- bot-score -->
+<!-- bert spell check -->
 
 <!-- Content discovery --- Integrations --- firehose -->
 
